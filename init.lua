@@ -1,3 +1,5 @@
+local shell = os.getenv("SHELL")
+
 local function error(s, ...)
   ya.notify({ title = "fuse-archive", content = string.format(s, ...), timeout = 3, level = "error" })
 end
@@ -118,7 +120,7 @@ end
 local function create_mount_path(file)
   local tmp_path = get_state("global", "fuse_dir") .. "/" .. file
 
-  local ret_code = run_command("mkdir", { "-p", ya.quote(tmp_path) })
+  local ret_code = run_command("mkdir", { "-p", tmp_path })
   if ret_code ~= 0 then
     error("Cannot create tmp file %s", tmp_path)
     return nil
@@ -152,7 +154,7 @@ return {
       if not tmp_file_path then
         return
       end
-      local ret_code = run_command("fuse-archive", { ya.quote(file), ya.quote(tmp_file_path) })
+      local ret_code = run_command(shell, { "-c", "fuse-archive " .. ya.quote(file) .." " .. ya.quote(tmp_file_path) })
       if ret_code ~= 0 then
         os.remove(tmp_file_path)
         error(" Unable to mount %s", file)
@@ -173,7 +175,7 @@ return {
       local tmp_file = get_state(file, "tmp")
       ya.manager_emit("cd", { get_state(file, "cwd") })
 
-      local ret_code = run_command("fusermount", { "-u", ya.quote(tmp_file) })
+      local ret_code = run_command(shell, { "-c", "fusermount -u " .. ya.quote(tmp_file) })
       if ret_code ~= 0 then
         error("Unable to unmount %s", tmp_file)
       end
