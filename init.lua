@@ -29,15 +29,6 @@ local is_mount_point = ya.sync(function(state)
   return false
 end)
 
-local current_url = ya.sync(function()
-  local h = cx.active.current.hovered
-  if h then
-    return cx.active.current.hovered.url
-  else
-    return nil
-  end
-end)
-
 local current_file = ya.sync(function()
   local h = cx.active.current.hovered
   if h then
@@ -82,22 +73,28 @@ local function run_command(cmd, args)
   end
 end
 
-local function valid_extension(path)
-  if not path or path == "" then
+local valid_extension = ya.sync(function()
+  local h = cx.active.current.hovered
+  if h then
+    if h.cha.is_dir then
+      return false
+    end
+    local valid_extensions = {
+      "zip", "gz", "bz2", "tar", "tgz", "tbz2", "txz", "xz", "tzs",
+      "zst", "iso", "rar", "7z", "cpio", "lz", "lzma", "shar", "a",
+      "ar", "apk", "jar", "xpi", "cab"
+    }
+    local filename = tostring(h.url)
+    for _, ext in ipairs(valid_extensions) do
+      if filename:find("%." .. ext .. "$") then
+        return true
+      end
+    end
+    return false
+  else
     return false
   end
-  local valid_extensions = {
-      ".zip", ".gz", ".bz2", ".tar", ".tgz", ".tbz2", ".txz", ".xz", ".tzs",
-      ".zst", ".iso", ".rar", ".7z", ".cpio", ".lz", ".lzma", ".shar", ".a",
-      ".ar", ".apk", ".jar", ".xpi", ".cab"
-  }
-  for _, ext in ipairs(valid_extensions) do
-    if path:find(ext .. "$") then
-      return true
-    end
-  end
-  return false
-end
+end)
 
 local function fuse_dir()
   local state_dir = os.getenv("XDG_STATE_HOME")
@@ -121,7 +118,7 @@ end
 local function create_mount_path(file)
   local tmp_path = get_state("global", "fuse_dir") .. "/" .. file
 
-  local ret_code = run_command("mkdir", { "-p", tmp_path })
+  local ret_code = run_command("mkdir", { "-p", ya.quote(tmp_path) })
   if ret_code ~= 0 then
     error("Cannot create tmp file %s", tmp_path)
     return nil
@@ -146,7 +143,7 @@ return {
       if file == nil then
         return
       end
-      if not valid_extension(tostring(current_url())) then
+      if not valid_extension() then
         ya.manager_emit("enter", {})
         return
       end
@@ -155,7 +152,7 @@ return {
       if not tmp_file_path then
         return
       end
-      local ret_code = run_command("fuse-archive", { file, ya.quote(tmp_file_path) })
+      local ret_code = run_command("fuse-archive", { ya.quote(file), ya.quote(tmp_file_path) })
       if ret_code ~= 0 then
         os.remove(tmp_file_path)
         error(" Unable to mount %s", file)
