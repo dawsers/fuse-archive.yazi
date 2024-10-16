@@ -33,6 +33,12 @@ available in most Linux distributions.
 ya pack -a dawsers/fuse-archive
 ```
 
+Modify your `~/.config/yazi/init.lua` to include:
+
+``` lua
+require(fuse-archive):setup()
+```
+
 ## Usage
 
 The plugin works transparently, so for the best effect, remap your navigation
