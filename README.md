@@ -39,6 +39,19 @@ Modify your `~/.config/yazi/init.lua` to include:
 require(fuse-archive):setup()
 ```
 
+### Options
+
+The plugin supports the following options, which can be assigned during setup:
+
+1. `smart_enter`: If `true`, when *entering* a file it will be *opened*, while
+directories will always be *entered*. The default value is `false`.
+
+``` lua
+require(fuse-archive):setup({
+  smart_enter = true,
+})
+```
+
 ## Usage
 
 The plugin works transparently, so for the best effect, remap your navigation

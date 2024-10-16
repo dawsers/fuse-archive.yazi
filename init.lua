@@ -48,6 +48,21 @@ local current_dir_name = ya.sync(function()
   return cx.active.current.cwd:name()
 end)
 
+local enter = ya.sync(function()
+  local h = cx.active.current.hovered
+  if h then
+    if h.cha.is_dir then
+		  ya.manager_emit("enter", {})
+    else
+      if get_state("global", "smart_enter") then
+        ya.manager_emit("open", { hovered = true })
+      else
+        ya.manager_emit("enter", {})
+      end
+    end
+  end
+end)
+
 local function run_command(cmd, args)
   local cwd = current_dir()
   local child, cmd_err = Command(cmd)
@@ -128,9 +143,14 @@ local function create_mount_path(file)
   return tmp_path
 end
 
-local function setup()
+local function setup(_, opts)
   local fuse = fuse_dir()
   set_state("global", "fuse_dir", fuse)
+  if opts and opts.smart_enter then
+    set_state("global", "smart_enter", true)
+  else
+    set_state("global", "smart_enter", false)
+  end
 end
 
 return {
@@ -146,7 +166,7 @@ return {
         return
       end
       if not valid_extension() then
-        ya.manager_emit("enter", {})
+        enter()
         return
       end
       local tmp_file_name = get_tmp_file_name(file)
