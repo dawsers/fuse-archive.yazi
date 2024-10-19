@@ -1,6 +1,6 @@
 # fuse-archive.yazi
 
-[fuse-archive.yazi](https://github.com/dawsers7/fuse-archive.yazi)
+[fuse-archive.yazi](https://github.com/dawsers/fuse-archive.yazi)
 uses [fuse-archive](https://github.com/google/fuse-archive) to
 transparently mount and unmount archives in read-only mode, allowing you to
 navigate inside, view, and extract individual or groups of files.
@@ -13,7 +13,7 @@ than [fuse-archive](https://github.com/google/fuse-archive).
 It also supports very few file types compared to this plugin, and you need to
 mount and unmount the archives manually.
 
-[fuse-archive.yazi](https://github.com/dawsers7/fuse-archive.yazi) supports
+[fuse-archive.yazi](https://github.com/dawsers/fuse-archive.yazi) supports
 mounting the following file extensions: `.zip`, `.gz`, `.bz2`, `.tar`, `.tgz`,
 `.tbz2`, `.txz`, `.xz`, `.tzs`, `.zst`, `.iso`, `.rar`, `.7z`, `.cpio`, `.lz`,
 `.lzma`, `.shar`, `.a`, `.ar`, `.apk`, `.jar`, `.xpi`, `.cab`.
@@ -36,7 +36,7 @@ ya pack -a dawsers/fuse-archive
 Modify your `~/.config/yazi/init.lua` to include:
 
 ``` lua
-require(fuse-archive):setup()
+require("fuse-archive"):setup()
 ```
 
 ### Options
@@ -47,7 +47,7 @@ The plugin supports the following options, which can be assigned during setup:
 directories will always be *entered*. The default value is `false`.
 
 ``` lua
-require(fuse-archive):setup({
+require("fuse-archive"):setup({
   smart_enter = true,
 })
 ```
