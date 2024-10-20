@@ -174,7 +174,7 @@ return {
       if not tmp_file_path then
         return
       end
-      local ret_code = run_command(shell, { "-c", "fuse-archive " .. ya.quote(file) .." " .. ya.quote(tmp_file_path) })
+      local ret_code = run_command(shell, { "-c", "fuse-archive " .. ya.quote("./" .. file) .." " .. ya.quote(tmp_file_path) })
       if ret_code ~= 0 then
         os.remove(tmp_file_path)
         error(" Unable to mount %s", file)
