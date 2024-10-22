@@ -52,6 +52,29 @@ require("fuse-archive"):setup({
 })
 ```
 
+### Possible Conflicts
+
+You may run into trouble with certain archives if `yazi.toml` has an opener
+that extracts archives (the default opener defined as preset does that):
+
+``` toml
+extract = [
+	{ run = 'ya pub extract --list "$@"', desc = "Extract here", for = "unix" },
+	{ run = 'ya pub extract --list %*',   desc = "Extract here", for = "windows" },
+]
+```
+
+The plugin still works, but the UI may be confusing.
+In that case, modify your `yazi.toml` to contain:
+
+``` toml
+extract = [
+]
+```
+
+and now *fuse-archive* will be the one mounting and showing the contents of the
+archive.
+
 ## Usage
 
 The plugin works transparently, so for the best effect, remap your navigation
