@@ -154,7 +154,8 @@ local function setup(_, opts)
 end
 
 return {
-  entry = function(_, args)
+  entry = function(_, job)
+    local args = job.args or job
     local action = args[1]
     if not action then
       return
