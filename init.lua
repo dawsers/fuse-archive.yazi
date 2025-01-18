@@ -70,7 +70,7 @@ local function run_command(cmd, args)
     :cwd(cwd)
     :stdin(Command.INHERIT)
     :stdout(Command.PIPED)
-    :stderr(Command.INHERIT)
+    :stderr(Command.PIPED)
     :spawn()
 
   if not child then
